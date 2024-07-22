@@ -10,13 +10,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cabff44a-f517-451b-b1f0-e76d80cbb4af" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/ClimateMonitoringServer_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/ClimateMonitoringCommon_0_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/mysql_connector_j.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/uni/climatemonitor/server/DatabaseServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/ClimateMonitoringCommon_0_2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/ClimateMonitoringCommon_0_1.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClimateMonitoringServer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ClimateMonitoringServer.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/uni/climatemonitor/server/ServerMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/uni/climatemonitor/server/ServerMain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/uni/climatemonitor/server/DatabaseServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/uni/climatemonitor/server/DatabaseServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,8 +44,8 @@
     "Repository.Attach.Sources": "false",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "last_opened_file_path": "/home/luca/personal/uni/I ANNO/labA/ClimateMonitoringServer/lib/ClimateMonitoringCommon-0.1.jar",
-    "project.structure.last.edited": "Artifacts",
+    "last_opened_file_path": "/home/luca/personal/uni/I ANNO/labA/ClimateMonitoringCommon/bin/ClimateMonitoringCommon_jar/ClimateMonitoringCommon-0.2.jar",
+    "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.1484375",
     "project.structure.side.proportion": "0.2"
   }

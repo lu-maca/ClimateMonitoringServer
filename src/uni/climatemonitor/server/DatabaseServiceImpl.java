@@ -38,7 +38,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
         final MonitoringCenter mc = o.getMonitoringCenter();
         final String query = String.format("""
                 INSERT INTO operators (name, tax_code, email, username, pwd, center) VALUES (%s, %s, %s, %s, %s, &s)
-                """, o.getName(), o.getTaxCode(), o.getEmail(), o.getUsername(), o.getPassword(), mc.);
+                """, o.getName(), o.getTaxCode(), o.getEmail(), o.getUsername(), o.getPassword(), mc.getId());
 
         try {
             Statement statement = getStatement();
@@ -111,6 +111,8 @@ public class DatabaseServiceImpl implements IDatabaseService {
         System.out.println(d.operatorExists("mrossi82", "pippoo"));
         System.out.println(d.operatorExists("sdf", "pippoo"));
 
+
+        MonitoringCenter mc = new MonitoringCenter("Centro del Clima - Milano", "Via M. Curie, 28 - Milano (MI)", )
         Operator o = new Operator("Luca Bianchi", "BNCLCU91L26L682G", "lbianchi@yahoo.com", "lbianchi", "Varese10#", );
         System.out.println(d.pushOperator(o));
         System.out.println(d.operatorExists("lbianchi", "pippoo"));
