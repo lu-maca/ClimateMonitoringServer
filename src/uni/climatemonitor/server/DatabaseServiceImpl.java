@@ -17,7 +17,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
     static final String password = "ClimateMonitoring";
 
     public boolean operatorExists(String username, String taxCode) throws RemoteException {
-        final String query = "SELECT COUNT(*) AS recordCount FROM operators WHERE username=\"" + username + "\"";
+        final String query = "SELECT COUNT(*) AS recordCount FROM Operator WHERE username=\"" + username + "\"";
 
         try {
             ResultSet results = getStatement().executeQuery(query);
@@ -37,8 +37,8 @@ public class DatabaseServiceImpl implements IDatabaseService {
     public boolean pushOperator(Operator o) throws RemoteException {
         final MonitoringCenter mc = o.getMonitoringCenter();
         final String query = String.format("""
-                INSERT INTO operators (name, tax_code, email, username, pwd, center) VALUES (%s, %s, %s, %s, %s, &s)
-                """, o.getName(), o.getTaxCode(), o.getEmail(), o.getUsername(), o.getPassword(), mc.getId());
+                        INSERT INTO Operator (name, tax_code, email, username, pwd, id) VALUES ("%s", "%s", "%s", "%s", "%s", "%s")""",
+                o.getName(), o.getTaxCode(), o.getEmail(), o.getUsername(), o.getPassword(), mc.getId());
 
         try {
             Statement statement = getStatement();
@@ -112,8 +112,8 @@ public class DatabaseServiceImpl implements IDatabaseService {
         System.out.println(d.operatorExists("sdf", "pippoo"));
 
 
-        MonitoringCenter mc = new MonitoringCenter("Centro del Clima - Milano", "Via M. Curie, 28 - Milano (MI)", )
-        Operator o = new Operator("Luca Bianchi", "BNCLCU91L26L682G", "lbianchi@yahoo.com", "lbianchi", "Varese10#", );
+        MonitoringCenter mc = new MonitoringCenter("Centro Climatico di Como", "Via Giovio, 12 - Como (CO)", "0");
+        Operator o = new Operator("Luca Bianchi", "BNCLCU91L26L682G", "lbianchi@yahoo.com", "lbianchi", "Varese10#", mc);
         System.out.println(d.pushOperator(o));
         System.out.println(d.operatorExists("lbianchi", "pippoo"));
 
