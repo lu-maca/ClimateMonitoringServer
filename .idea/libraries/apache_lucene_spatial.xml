@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="apache.lucene.spatial" type="repository">
+    <properties maven-id="org.apache.lucene:lucene-spatial:8.3.0" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/lucene-spatial-8.3.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lucene-core-8.3.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -8,6 +8,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="mysql.connector.j" level="project" />
-    <orderEntry type="library" name="ClimateMonitoringCommon-0.3" level="project" />
+    <orderEntry type="library" name="apache.lucene.core" level="project" />
+    <orderEntry type="library" name="apache.lucene.spatial" level="project" />
+    <orderEntry type="library" name="ClimateMonitoringCommon-0.5" level="project" />
   </component>
 </module>
