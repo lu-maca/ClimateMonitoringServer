@@ -9,6 +9,7 @@ import uni.climatemonitor.common.ClimateParameter;
 
 import java.rmi.RemoteException;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,10 +27,9 @@ public class DatabaseServiceImpl implements IDatabaseService {
         try {
             ResultSet results = getStatement().executeQuery(query);
             int count = countRowsFromSelectCountQuery(results);
-            System.out.println("Count of operators with username " + username + ": " + count);
             return (count == 1? true : false);
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             // something wrong
             e.printStackTrace();
             return false;
@@ -42,22 +42,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 INSERT INTO Operator (name, tax_code, email, username, pwd, id) VALUES ("%s", "%s", "%s", "%s", "%s", "%s")""",
                 o.getName(), o.getTaxCode(), o.getEmail(), o.getUsername(), o.getPassword(), mc.getId());
 
-        try {
-            Statement statement = getStatement();
-            int rowsInserted = statement.executeUpdate(query);
-            // assert that new row is only one, if not returns an error
-            assert rowsInserted == 1;
-            return true;
-
-        } catch (SQLException e) {
-            // something wrong
-            e.printStackTrace();
-            return false;
-        } catch (AssertionError e) {
-            // something wrong
-            e.printStackTrace();
-            return false;
-        }
+        return pushSomethingToDB(query);
     }
 
     public boolean isOperatorEnabledForLocation(String username, Location l) throws RemoteException {
@@ -72,7 +57,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
             int count = countRowsFromSelectCountQuery(results);
             return (count == 1? true : false);
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             // something wrong
             e.printStackTrace();
             return false;
@@ -92,7 +77,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
             MonitoringCenter monitoringCenter = new MonitoringCenter(
                     results.getString("name"), results.getString("address"), results.getString("id"));
             return monitoringCenter;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             // something wrong
             e.printStackTrace();
             return null;
@@ -123,7 +108,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
             }
             return outList;
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             // something wrong
             e.printStackTrace();
             return null;
@@ -172,7 +157,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
             }
             return outList;
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             // something wrong
             e.printStackTrace();
             return null;
@@ -180,25 +165,89 @@ public class DatabaseServiceImpl implements IDatabaseService {
     }
 
     public boolean locationExists(Location l) throws RemoteException {
-        return true;
+        final String query = "SELECT COUNT(*) FROM Location WHERE id = \"" + l.getGeonameID() + "\"";
+
+        try {
+            ResultSet results = getStatement().executeQuery(query);
+            int count = countRowsFromSelectCountQuery(results);
+            return (count == 1? true : false);
+
+        } catch (Exception e) {
+            // something wrong
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    public boolean pushLocation(Location l) throws RemoteException { return true; }
+    public boolean pushLocation(Location l) throws RemoteException {
+        final String query = String.format("""
+                INSERT INTO Location (id, name, ascii_name, state, latitude, longitude) VALUES ("%s", "%s", "%s", "%s", %f. %f)""",
+                l.getGeonameID(), l.getAsciiName(), l.getAsciiName(), l.getState(), l.getCoordinates().getLatitude(), l.getCoordinates().getLongitude());
 
-    public ClimateParameter getClimateParameterForDate(Date date) throws RemoteException {
-        return null;
+        return pushSomethingToDB(query);
+    }
+
+    public ClimateParameter getClimateParameterForDate(Location l, LocalDate date) throws RemoteException {
+        final String query = String.format("""
+                select * from ClimateParameter where (date = "%s" and geoname_id = "%s")""" , date, l.getGeonameID());
+
+        try {
+            Statement statement = getStatement();
+            ResultSet results = statement.executeQuery(query);
+            // results can only be composed by a single row, because we are imposing
+            // "where date = ... and geoname_id = ...", and since (date, geoname_id) is the primary key, it will always be unique
+            results.next();
+            ClimateParameter climateParameter = new ClimateParameter(l.getGeonameID(),
+                    results.getInt("wind"), results.getInt("humidity"), results.getInt("pressure"),
+                    results.getInt("temperature"), results.getInt("rainfall"), results.getInt("glaciers_alt"),
+                    results.getInt("glaciers_mass"), results.getString("notes"), date, results.getString("who"));
+            return climateParameter;
+        } catch (Exception e) {
+            // something wrong
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public boolean pushClimateParameter(ClimateParameter p) throws RemoteException {
-        return true;
+        final String query = String.format("""
+                INSERT INTO ClimateParameter (date, geoname_id, wind, humidity, pressure, temperature, rainfall, glaciers_alt, glaciers_mass, notes, who) VALUES ("%s", "%s", %d, %d, %d, %d, %d, %d, %d, "%s", "%s")""",
+                p.getDate().toString(), p.getGeonameId(), p.getWind(), p.getHumidity(), p.getPressure(), p.getTemperature(), p.getRainfall(), p.getGlaciersAlt(), p.getGlaciersMass(), p.getNotes(), p.getWho());
+
+        return pushSomethingToDB(query);
     }
 
     public MonitoringCenter getMonitoringCenterFromName(String name) throws RemoteException {
-        return null;
+        final String query = String.format("""
+                select * from MonitoringCenter where (name = "%s")""" , name);
+
+        try {
+            Statement statement = getStatement();
+            ResultSet results = statement.executeQuery(query);
+            // results can only be composed by a single row, because we are imposing
+            // "where name = ...", and name is unique in the table
+            results.next();
+            MonitoringCenter monitoringCenter = new MonitoringCenter(name, results.getString("address"), results.getString("id"));
+            return monitoringCenter;
+        } catch (Exception e) {
+            // something wrong
+            e.printStackTrace();
+            return null;
+        }
     }
 
+    /**
+     * ! SISTEMARE, NON CONOSCO ID PRIMA DI CREARLO, DEVE ESSERE QUESTA FUNZIONE CHE ME LO PASSA
+     * @param c
+     * @return
+     * @throws RemoteException
+     */
     public boolean pushMonitoringCenter(MonitoringCenter c) throws RemoteException{
-        return true;
+        final String query = String.format("""
+                INSERT INTO MonitoringCenter (id, name, address) VALUES ("%s", "%s", "%s")""",
+                c.getId(), c.getName());
+
+        return pushSomethingToDB(query);
     }
 
     private Statement getStatement() throws SQLException {
@@ -218,6 +267,26 @@ public class DatabaseServiceImpl implements IDatabaseService {
         return results.getInt(1);
     }
 
+    /**
+     * Push something to the DB according to query
+     * @param query string that contains the query
+     * @return true if transaction is ok, false otherwise
+     */
+    private boolean pushSomethingToDB(String query) {
+        try {
+            Statement statement = getStatement();
+            int rowsInserted = statement.executeUpdate(query);
+            // assert that new row is only one, if not returns an error
+            assert rowsInserted == 1;
+            return true;
+
+        } catch (Exception e) {
+            // something wrong
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // tests
     public static void main(String args[]) throws RemoteException, SQLException {
         DatabaseServiceImpl d = new DatabaseServiceImpl();
@@ -232,5 +301,18 @@ public class DatabaseServiceImpl implements IDatabaseService {
         System.out.println(d.filterLocationsByName("mila"));
         System.out.println(d.filterLocationsByCoordinates(new Coordinates(45.46427, 9.18951)));
 
+        // check if the format works as expected
+        final String query = String.format("""
+                INSERT INTO Location (id, name, ascii_name, state, latitude, longitude) VALUES ("%s", "%s", "%s", "%s", %f. %f)""",
+                l.getGeonameID(), l.getAsciiName(), l.getAsciiName(), l.getState(), l.getCoordinates().getLatitude(), l.getCoordinates().getLongitude());
+        System.out.println(query);
+
+        // another check on format
+        ClimateParameter p = new ClimateParameter("3164699", 5, 4, 3, 3, 4,
+                4, 5, "", LocalDate.of(2024, 12, 23), "BNCLCU91L26L682G");
+        System.out.println(d.getClimateParameterForDate(l, LocalDate.of(2024, 12, 23)).getGeonameId());
+
+        // check monitoring center get
+        System.out.println(d.getMonitoringCenterFromName("Centro Climatico di Como").getId());
     }
 }

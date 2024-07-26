@@ -10,10 +10,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cabff44a-f517-451b-b1f0-e76d80cbb4af" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/ClimateMonitoringCommon_0_3.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/ClimateMonitoringCommon.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/ClimateMonitoringCommon_0_6.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/ClimateMonitoringCommon_0_7.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClimateMonitoringServer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ClimateMonitoringServer.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ClimateMonitoringCommon-0.1.jar" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/uni/climatemonitor/server/DatabaseServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/uni/climatemonitor/server/DatabaseServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -44,8 +44,8 @@
     "Repository.Attach.Sources": "false",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "last_opened_file_path": "/home/luca/personal/uni/I ANNO/labA/ClimateMonitoringCommon/bin/ClimateMonitoringCommon_jar/ClimateMonitoringCommon-0.5.jar",
-    "project.structure.last.edited": "Libraries",
+    "last_opened_file_path": "/home/luca/personal/uni/I ANNO/labA/ClimateMonitoringCommon/bin/ClimateMonitoringCommon_jar/ClimateMonitoringCommon-0.7.jar",
+    "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.1484375",
     "project.structure.side.proportion": "0.2"
   }
