@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="ClimateMonitoringCommon-0.5">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../ClimateMonitoringCommon/bin/ClimateMonitoringCommon_jar/ClimateMonitoringCommon-0.5.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
