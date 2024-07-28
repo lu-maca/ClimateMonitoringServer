@@ -242,12 +242,28 @@ public class DatabaseServiceImpl implements IDatabaseService {
      * @return
      * @throws RemoteException
      */
-    public boolean pushMonitoringCenter(MonitoringCenter c) throws RemoteException{
+    public boolean pushMonitoringCenter(MonitoringCenter c) throws RemoteException {
         final String query = String.format("""
                 INSERT INTO MonitoringCenter (id, name, address) VALUES ("%s", "%s", "%s")""",
                 c.getId(), c.getName());
 
         return pushSomethingToDB(query);
+    }
+
+    public boolean isMonitoringCentersTableEmpty() throws RemoteException {
+        final String query = String.format("select count(*) from MonitoringCenter");
+
+        try {
+            ResultSet results = getStatement().executeQuery(query);
+            int count = countRowsFromSelectCountQuery(results);
+            return (count == 0? true : false);
+
+        } catch (Exception e) {
+            // something wrong
+            e.printStackTrace();
+            return false;
+        }
+
     }
 
     private Statement getStatement() throws SQLException {
