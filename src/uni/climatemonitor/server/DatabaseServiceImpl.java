@@ -7,6 +7,8 @@ import uni.climatemonitor.common.Operator;
 import uni.climatemonitor.common.MonitoringCenter;
 import uni.climatemonitor.common.ClimateParameter;
 
+import javax.swing.plaf.nimbus.State;
+import javax.xml.transform.Result;
 import java.rmi.RemoteException;
 import java.sql.*;
 import java.time.LocalDate;
@@ -242,12 +244,54 @@ public class DatabaseServiceImpl implements IDatabaseService {
      * @return
      * @throws RemoteException
      */
-    public boolean pushMonitoringCenter(MonitoringCenter c) throws RemoteException {
-        final String query = String.format("""
-                INSERT INTO MonitoringCenter (id, name, address) VALUES ("%s", "%s", "%s")""",
-                c.getId(), c.getName());
+    public boolean pushMonitoringCenter(MonitoringCenter c, ArrayList<Location> monitoredAreas) throws RemoteException {
+        // multiple transactions
 
-        return pushSomethingToDB(query);
+        String query_monitors = """
+                INSERT INTO Monitors (area_id, center_id) VALUES ("%s", "%s")""";
+        final String query_max_id = "SELECT MAX(id) FROM MonitoringCenter";
+        Connection conn = null;
+
+        try {
+            conn = DriverManager.getConnection(DB_URL, DB_USERNAME, PASSWORD);
+            // set autocommit false so that we can have multiple transactions
+            conn.setAutoCommit(false);
+            Statement statement = conn.createStatement();
+
+            ResultSet res = statement.executeQuery(query_max_id);
+            res.next();
+            int max_id = res.getInt(1);
+
+            // set max possible id
+            final String query_mon_center = String.format("""
+                INSERT INTO MonitoringCenter (id, name, address) VALUES ("%d", "%s", "%s")""",
+                    max_id+1, c.getName(), c.getAddress());
+            statement.addBatch(query_mon_center);
+
+            for (Location l : monitoredAreas) {
+                String query_area = String.format(query_monitors, l.getGeonameID(), max_id+1);
+                statement.addBatch(query_area);
+            }
+            statement.executeBatch();
+            conn.commit();
+
+            return true;
+
+        } catch (Exception e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                    conn.close();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+            e.printStackTrace();
+            return false;
+        }
+
+
+
     }
 
     public boolean isMonitoringCentersTableEmpty() throws RemoteException {
@@ -307,7 +351,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
     public static void main(String args[]) throws RemoteException, SQLException {
         DatabaseServiceImpl d = new DatabaseServiceImpl();
 
-        // operators related tests
+      /*  // operators related tests
         Location l = new Location("3164699", "Varese", "Varese", "Italy", 45.82058, 8.82511);
         System.out.println(d.operatorExists("lbianchi"));
         System.out.println(d.isOperatorEnabledForLocation("lbianchi", l));
@@ -329,6 +373,11 @@ public class DatabaseServiceImpl implements IDatabaseService {
         System.out.println(d.getClimateParameterForDate(l, LocalDate.of(2024, 12, 23)).getGeonameId());
 
         // check monitoring center get
-        System.out.println(d.getMonitoringCenterFromName("Centro Climatico di Como").getId());
+        System.out.println(d.getMonitoringCenterFromName("Centro Climatico di Como").getId());*/
+
+        // add monitors for Milano
+        ArrayList<Location> areas = d.filterLocationsByCoordinates(new Coordinates(45.46427, 9.18951));
+        MonitoringCenter mc_milan = new MonitoringCenter("Centro Metereologico di Milano", "Piazzale Loreto 12, Milano (MI)", "0");
+        System.out.println(d.pushMonitoringCenter(mc_milan, areas));
     }
 }
