@@ -244,7 +244,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
      * @return
      * @throws RemoteException
      */
-    public boolean pushMonitoringCenter(MonitoringCenter c, ArrayList<Location> monitoredAreas) throws RemoteException {
+    public boolean pushMonitoringCenter(MonitoringCenter c, ArrayList<String> monitoredAreas) throws RemoteException {
         // multiple transactions
 
         String query_monitors = """
@@ -268,8 +268,8 @@ public class DatabaseServiceImpl implements IDatabaseService {
                     max_id+1, c.getName(), c.getAddress());
             statement.addBatch(query_mon_center);
 
-            for (Location l : monitoredAreas) {
-                String query_area = String.format(query_monitors, l.getGeonameID(), max_id+1);
+            for (String l : monitoredAreas) {
+                String query_area = String.format(query_monitors, l, max_id+1);
                 statement.addBatch(query_area);
             }
             statement.executeBatch();
@@ -377,7 +377,9 @@ public class DatabaseServiceImpl implements IDatabaseService {
 
         // add monitors for Milano
         ArrayList<Location> areas = d.filterLocationsByCoordinates(new Coordinates(45.46427, 9.18951));
+        ArrayList<String> areas_ids = new ArrayList<>();
+        for (Location l : areas) {areas_ids.add(l.getGeonameID());}
         MonitoringCenter mc_milan = new MonitoringCenter("Centro Metereologico di Milano", "Piazzale Loreto 12, Milano (MI)", "0");
-        System.out.println(d.pushMonitoringCenter(mc_milan, areas));
+        System.out.println(d.pushMonitoringCenter(mc_milan, areas_ids));
     }
 }
