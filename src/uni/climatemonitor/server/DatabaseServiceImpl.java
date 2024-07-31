@@ -7,8 +7,6 @@ import uni.climatemonitor.common.Operator;
 import uni.climatemonitor.common.MonitoringCenter;
 import uni.climatemonitor.common.ClimateParameter;
 
-import javax.swing.plaf.nimbus.State;
-import javax.xml.transform.Result;
 import java.rmi.RemoteException;
 import java.sql.*;
 import java.time.LocalDate;
@@ -23,21 +21,28 @@ public class DatabaseServiceImpl implements IDatabaseService {
     static final String PASSWORD = "ClimateMonitoring";
     static final double MAX_DIST = 50_000.0;
 
-    public boolean operatorExists(String username) throws RemoteException {
-        final String query = "SELECT COUNT(*) FROM Operator WHERE username=\"" + username + "\"";
+    @Override
+    public Operator operatorExists(String username) throws RemoteException {
+        final String query = String.format("""
+                select distinct  tax_code, o.name as oper_name, email, username, pwd, center_id, m.name as center_name, address from Operator o join Monitors on (id = center_id) join MonitoringCenter m using (id)  where (username = "%s")""", username);
 
         try {
             ResultSet results = getStatement().executeQuery(query);
-            int count = countRowsFromSelectCountQuery(results);
-            return (count == 1? true : false);
+            results.next();
+            MonitoringCenter mc = new MonitoringCenter(results.getString("center_name"), results.getString("address"), results.getString("center_id") );
+            Operator operator = new Operator(results.getString("oper_name"), results.getString("tax_code"),
+                                            results.getString("email"), results.getString("username"),
+                                            results.getString("pwd"), mc);
+            return operator;
 
         } catch (Exception e) {
             // something wrong
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 
+    @Override
     public boolean pushOperator(Operator o) throws RemoteException {
         final MonitoringCenter mc = o.getMonitoringCenter();
         final String query = String.format("""
@@ -47,6 +52,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
         return pushSomethingToDB(query);
     }
 
+    @Override
     public boolean isOperatorEnabledForLocation(String username, Location l) throws RemoteException {
         final String locationId = l.getGeonameID();
         String query = String.format("""
@@ -66,6 +72,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
         }
     }
 
+    @Override
     public MonitoringCenter getMonitoringCenterForOperator(String username) throws RemoteException {
         final String query = String.format("""
                 select * from MonitoringCenter where id = (select id from Operator where username = "%s")""",
@@ -86,6 +93,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
         }
     }
 
+    @Override
     public ArrayList<Location> filterLocationsByName(String filterOnName) throws RemoteException {
         ArrayList<Location> outList = new ArrayList<Location>();
 
@@ -117,6 +125,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
         }
     }
 
+    @Override
     public ArrayList<Location> filterLocationsByCoordinates(Coordinates coordinates) throws RemoteException {
         ArrayList<Location> outList = new ArrayList<Location>();
 
@@ -166,6 +175,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
         }
     }
 
+    @Override
     public boolean locationExists(Location l) throws RemoteException {
         final String query = "SELECT COUNT(*) FROM Location WHERE id = \"" + l.getGeonameID() + "\"";
 
@@ -181,6 +191,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
         }
     }
 
+    @Override
     public boolean pushLocation(Location l) throws RemoteException {
         final String query = String.format("""
                 INSERT INTO Location (id, name, ascii_name, state, latitude, longitude) VALUES ("%s", "%s", "%s", "%s", %f. %f)""",
@@ -189,6 +200,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
         return pushSomethingToDB(query);
     }
 
+    @Override
     public ClimateParameter getClimateParameterForDate(Location l, LocalDate date) throws RemoteException {
         final String query = String.format("""
                 select * from ClimateParameter where (date = "%s" and geoname_id = "%s")""" , date, l.getGeonameID());
@@ -211,6 +223,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
         }
     }
 
+    @Override
     public boolean pushClimateParameter(ClimateParameter p) throws RemoteException {
         final String query = String.format("""
                 INSERT INTO ClimateParameter (date, geoname_id, wind, humidity, pressure, temperature, rainfall, glaciers_alt, glaciers_mass, notes, who) VALUES ("%s", "%s", %d, %d, %d, %d, %d, %d, %d, "%s", "%s")""",
@@ -219,6 +232,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
         return pushSomethingToDB(query);
     }
 
+    @Override
     public MonitoringCenter getMonitoringCenterFromName(String name) throws RemoteException {
         final String query = String.format("""
                 select * from MonitoringCenter where (name = "%s")""" , name);
@@ -244,6 +258,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
      * @return
      * @throws RemoteException
      */
+    @Override
     public boolean pushMonitoringCenter(MonitoringCenter c, ArrayList<String> monitoredAreas) throws RemoteException {
         // multiple transactions
 
@@ -294,6 +309,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
 
     }
 
+    @Override
     public boolean isMonitoringCentersTableEmpty() throws RemoteException {
         final String query = String.format("select count(*) from MonitoringCenter");
 
@@ -307,7 +323,34 @@ public class DatabaseServiceImpl implements IDatabaseService {
             e.printStackTrace();
             return false;
         }
+    }
 
+    @Override
+    public ArrayList<MonitoringCenter> getAllMonitoringCenters() throws RemoteException {
+        ArrayList<MonitoringCenter> outList = new ArrayList<>();
+
+        final String query = "select * from MonitoringCenter";
+
+        try {
+            Statement statement = getStatement();
+            ResultSet results = statement.executeQuery(query);
+
+            // create array list
+            while (results.next()) {
+                final String name = results.getString("name");
+                final String address = results.getString("address");
+                final String id = results.getString("id");
+
+                final MonitoringCenter mc = new MonitoringCenter(name, address, id);
+                outList.add(mc);
+            }
+            return outList;
+
+        } catch (Exception e) {
+            // something wrong
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private Statement getStatement() throws SQLException {
@@ -376,10 +419,13 @@ public class DatabaseServiceImpl implements IDatabaseService {
         System.out.println(d.getMonitoringCenterFromName("Centro Climatico di Como").getId());*/
 
         // add monitors for Milano
-        ArrayList<Location> areas = d.filterLocationsByCoordinates(new Coordinates(45.46427, 9.18951));
+        /*ArrayList<Location> areas = d.filterLocationsByCoordinates(new Coordinates(45.46427, 9.18951));
         ArrayList<String> areas_ids = new ArrayList<>();
         for (Location l : areas) {areas_ids.add(l.getGeonameID());}
         MonitoringCenter mc_milan = new MonitoringCenter("Centro Metereologico di Milano", "Piazzale Loreto 12, Milano (MI)", "0");
-        System.out.println(d.pushMonitoringCenter(mc_milan, areas_ids));
+        System.out.println(d.pushMonitoringCenter(mc_milan, areas_ids));*/
+
+        System.out.println(d.operatorExists("lbianchi"));
+        System.out.println(d.getAllMonitoringCenters());
     }
 }
