@@ -7,6 +7,7 @@ import uni.climatemonitor.common.Operator;
 import uni.climatemonitor.common.MonitoringCenter;
 import uni.climatemonitor.common.ClimateParameter;
 
+import java.io.Serial;
 import java.rmi.RemoteException;
 import java.sql.*;
 import java.time.LocalDate;
@@ -233,6 +234,44 @@ public class DatabaseServiceImpl implements IDatabaseService {
     }
 
     @Override
+    public ArrayList<ClimateParameter> getClimateParameterHistory(Location l) {
+        final String query = String.format("""
+                select * from ClimateParameter where (geoname_id="%s") order by date desc""", l.getGeonameID());
+        ArrayList<ClimateParameter> outList = new ArrayList<>();
+
+        try {
+            Statement statement = getStatement();
+            ResultSet results = statement.executeQuery(query);
+
+            // create array list
+            while (results.next()) {
+                final String geonameId = results.getString("geoname_id");
+                final int wind = results.getInt("wind");
+                final int humidity = results.getInt("humidity");
+                final int pressure = results.getInt("pressure");
+                final int temperature = results.getInt("temperature");
+                final int rainfall = results.getInt("rainfall");
+                final int glaciers_alt = results.getInt("glaciers_alt");
+                final int glaciers_mass = results.getInt("glaciers_mass");
+                final String notes = results.getString("notes");
+                final String who = results.getString("who");
+                final LocalDate date = results.getDate("date").toLocalDate();
+
+                final ClimateParameter cp = new ClimateParameter(geonameId, wind, humidity, pressure, temperature,
+                                                                rainfall, glaciers_alt, glaciers_mass, notes, date, who);
+                outList.add(cp);
+            }
+            return outList;
+
+        } catch (Exception e) {
+            // something wrong
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    @Override
     public MonitoringCenter getMonitoringCenterFromName(String name) throws RemoteException {
         final String query = String.format("""
                 select * from MonitoringCenter where (name = "%s")""" , name);
@@ -395,7 +434,6 @@ public class DatabaseServiceImpl implements IDatabaseService {
         DatabaseServiceImpl d = new DatabaseServiceImpl();
 
       /*  // operators related tests
-        Location l = new Location("3164699", "Varese", "Varese", "Italy", 45.82058, 8.82511);
         System.out.println(d.operatorExists("lbianchi"));
         System.out.println(d.isOperatorEnabledForLocation("lbianchi", l));
         System.out.println(d.getMonitoringCenterForOperator("lbianchi"));
@@ -427,5 +465,10 @@ public class DatabaseServiceImpl implements IDatabaseService {
 
         System.out.println(d.operatorExists("lbianchi"));
         System.out.println(d.getAllMonitoringCenters());
+
+        Location l = new Location("3164699", "Varese", "Varese", "Italy", 45.82058, 8.82511);
+        for (ClimateParameter c : d.getClimateParameterHistory(l)) {
+            System.out.println(c.getDate());
+        }
     }
 }
