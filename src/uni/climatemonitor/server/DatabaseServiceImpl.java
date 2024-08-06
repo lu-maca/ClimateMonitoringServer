@@ -343,9 +343,6 @@ public class DatabaseServiceImpl implements IDatabaseService {
             e.printStackTrace();
             return false;
         }
-
-
-
     }
 
     @Override
@@ -390,6 +387,13 @@ public class DatabaseServiceImpl implements IDatabaseService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public boolean addLocationToMonitoringCenter(Location l, MonitoringCenter mc) {
+        final String query = String.format("""
+                insert into Monitors (area_id, center_id) values (%s, %s)""", l.getGeonameID(), mc.getId());
+        return pushSomethingToDB(query);
     }
 
     private Statement getStatement() throws SQLException {
