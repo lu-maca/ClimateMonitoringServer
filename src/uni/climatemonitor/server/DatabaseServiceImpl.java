@@ -29,7 +29,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
 
         try {
             ResultSet results = getStatement().executeQuery(query);
-            results.next();
+            if (!results.next()) { return null; }
             MonitoringCenter mc = new MonitoringCenter(results.getString("center_name"), results.getString("address"), results.getString("center_id") );
             Operator operator = new Operator(results.getString("oper_name"), results.getString("tax_code"),
                                             results.getString("email"), results.getString("username"),
@@ -74,10 +74,10 @@ public class DatabaseServiceImpl implements IDatabaseService {
     }
 
     @Override
-    public MonitoringCenter getMonitoringCenterForOperator(String username) throws RemoteException {
+    public MonitoringCenter getMonitoringCenterForOperator(String tax_code) throws RemoteException {
         final String query = String.format("""
-                select * from MonitoringCenter where id = (select id from Operator where username = "%s")""",
-                username);
+                select * from MonitoringCenter where id = (select id from Operator where tax_code = "%s")""",
+                tax_code);
         try {
             Statement statement = getStatement();
             ResultSet results = statement.executeQuery(query);
@@ -292,7 +292,6 @@ public class DatabaseServiceImpl implements IDatabaseService {
     }
 
     /**
-     * ! SISTEMARE, NON CONOSCO ID PRIMA DI CREARLO, DEVE ESSERE QUESTA FUNZIONE CHE ME LO PASSA
      * @param c
      * @return
      * @throws RemoteException
