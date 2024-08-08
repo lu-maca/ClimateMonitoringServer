@@ -291,13 +291,8 @@ public class DatabaseServiceImpl implements IDatabaseService {
         }
     }
 
-    /**
-     * @param c
-     * @return
-     * @throws RemoteException
-     */
     @Override
-    public boolean pushMonitoringCenter(MonitoringCenter c, ArrayList<String> monitoredAreas) throws RemoteException {
+    public String pushMonitoringCenter(MonitoringCenter c, ArrayList<String> monitoredAreas) throws RemoteException {
         // multiple transactions
 
         String query_monitors = """
@@ -328,7 +323,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
             statement.executeBatch();
             conn.commit();
 
-            return true;
+            return String.format("%d", max_id+1);
 
         } catch (Exception e) {
             if (conn != null) {
@@ -340,7 +335,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
                 }
             }
             e.printStackTrace();
-            return false;
+            return "-1";
         }
     }
 
