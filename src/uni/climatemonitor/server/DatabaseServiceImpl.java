@@ -194,9 +194,26 @@ public class DatabaseServiceImpl implements IDatabaseService {
 
     @Override
     public boolean pushLocation(Location l) throws RemoteException {
+        final String maxIdQuery = "select max(id) from Location";
+        Statement statement = null;
+        int maxId;
+        try {
+            statement = getStatement();
+            ResultSet results = statement.executeQuery(maxIdQuery);
+            results.next();
+
+            maxId = Integer.parseInt(results.getString("max(id)"));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        int newId = maxId + 1;
+
         final String query = String.format("""
-                INSERT INTO Location (id, name, ascii_name, state, latitude, longitude) VALUES ("%s", "%s", "%s", "%s", %f. %f)""",
-                l.getGeonameID(), l.getAsciiName(), l.getAsciiName(), l.getState(), l.getCoordinates().getLatitude(), l.getCoordinates().getLongitude());
+                INSERT INTO Location (id, name, ascii_name, state, latitude, longitude) VALUES ("%s", "%s", "%s", "%s", %f, %f)""",
+                newId, l.getAsciiName(), l.getAsciiName(), l.getState(), l.getCoordinates().getLatitude(), l.getCoordinates().getLongitude());
 
         return pushSomethingToDB(query);
     }
