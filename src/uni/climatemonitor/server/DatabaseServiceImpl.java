@@ -57,14 +57,18 @@ public class DatabaseServiceImpl implements IDatabaseService {
     public boolean isOperatorEnabledForLocation(String username, Location l) throws RemoteException {
         final String locationId = l.getGeonameID();
         String query = String.format("""
-            select count(*) from Operator where id = ( select center_id from Monitors where area_id = "%s") and username = "%s"
-            """, locationId, username);
+                 select * from Operator join Monitors on (id = center_id) where area_id = "%s"
+                """, locationId);
 
         try {
             Statement statement = getStatement();
             ResultSet results = statement.executeQuery(query);
-            int count = countRowsFromSelectCountQuery(results);
-            return (count == 1? true : false);
+            while (results.next()) {
+                if (results.getString("username").equals(username)) {
+                    return true;
+                }
+            }
+            return false;
 
         } catch (Exception e) {
             // something wrong
@@ -87,6 +91,38 @@ public class DatabaseServiceImpl implements IDatabaseService {
             MonitoringCenter monitoringCenter = new MonitoringCenter(
                     results.getString("name"), results.getString("address"), results.getString("id"));
             return monitoringCenter;
+        } catch (Exception e) {
+            // something wrong
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public ArrayList<Location> getLocationsFromMonitoringCenter(String mc_id) throws RemoteException {
+        ArrayList<Location> outList = new ArrayList<Location>();
+
+        final String query = String.format("""
+                select * from Monitors join Location on (area_id = id) where (center_id = "%s")""", mc_id);
+
+        try {
+            Statement statement = getStatement();
+            ResultSet results = statement.executeQuery(query);
+
+            // create array list
+            while (results.next()) {
+                final String geonameID = results.getString("id");
+                final String name = results.getString("name");
+                final String asciiName = results.getString("ascii_name");
+                final String state = results.getString("state");
+                final double latitude = results.getDouble("latitude");
+                final double longitude = results.getDouble("longitude");
+
+                final Location l = new Location(geonameID, name, asciiName, state, latitude, longitude);
+                outList.add(l);
+            }
+            return outList;
+
         } catch (Exception e) {
             // something wrong
             e.printStackTrace();

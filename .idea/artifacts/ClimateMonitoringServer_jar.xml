@@ -5,7 +5,7 @@
       <element id="module-output" name="ClimateMonitoringServer" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/mysql-connector-j-8.3.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/protobuf-java-3.25.1.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/lib/ClimateMonitoringCommon-0.17.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/ClimateMonitoringCommon-0.18.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

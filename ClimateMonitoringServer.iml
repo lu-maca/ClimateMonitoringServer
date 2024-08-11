@@ -10,6 +10,6 @@
     <orderEntry type="library" name="mysql.connector.j" level="project" />
     <orderEntry type="library" name="apache.lucene.core" level="project" />
     <orderEntry type="library" name="apache.lucene.spatial" level="project" />
-    <orderEntry type="library" name="ClimateMonitoringCommon-0.17" level="project" />
+    <orderEntry type="library" name="ClimateMonitoringCommon-0.18" level="project" />
   </component>
 </module>
