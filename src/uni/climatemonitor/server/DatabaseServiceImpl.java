@@ -4,6 +4,7 @@ import uni.climatemonitor.common.Coordinates;
 import uni.climatemonitor.common.IDatabaseService;
 import uni.climatemonitor.common.Location;
 import uni.climatemonitor.common.Operator;
+import uni.climatemonitor.common.IClient;
 import uni.climatemonitor.common.MonitoringCenter;
 import uni.climatemonitor.common.ClimateParameter;
 
@@ -21,6 +22,22 @@ public class DatabaseServiceImpl implements IDatabaseService {
     static final String DB_USERNAME = "luca";
     static final String PASSWORD = "ClimateMonitoring";
     static final double MAX_DIST = 50_000.0;
+
+    HashMap<IClient, Location> clientsInLocation;
+
+    public DatabaseServiceImpl() {
+        clientsInLocation = new HashMap<>();
+    }
+
+    @Override
+    public synchronized void registerClientForLocation(IClient client, Location l) {
+        clientsInLocation.put(client, l);
+    }
+
+    @Override
+    public synchronized void unregisterClientForLocation(IClient client) {
+        clientsInLocation.remove(client);
+    }
 
     @Override
     public Operator operatorExists(String username) throws RemoteException {
@@ -282,8 +299,21 @@ public class DatabaseServiceImpl implements IDatabaseService {
         final String query = String.format("""
                 INSERT INTO ClimateParameter (date, geoname_id, wind, humidity, pressure, temperature, rainfall, glaciers_alt, glaciers_mass, notes, who) VALUES ("%s", "%s", %d, %d, %d, %d, %d, %d, %d, "%s", "%s")""",
                 p.getDate().toString(), p.getGeonameId(), p.getWind(), p.getHumidity(), p.getPressure(), p.getTemperature(), p.getRainfall(), p.getGlaciersAlt(), p.getGlaciersMass(), p.getNotes(), p.getWho());
+        boolean rc = pushSomethingToDB(query);
 
-        return pushSomethingToDB(query);
+        if (!rc) { return false; }
+
+        // synchronize clientsInLocation
+        synchronized (clientsInLocation) {
+            for (Map.Entry<IClient, Location> entry : clientsInLocation.entrySet()) {
+                Location thisLocation = entry.getValue();
+                if (thisLocation.getGeonameID().equals(p.getGeonameId())) {
+                    IClient client = entry.getKey();
+                    client.updateMe(p);
+                }
+            }
+        }
+        return true;
     }
 
     @Override
