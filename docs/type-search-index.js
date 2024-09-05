@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"uni.climatemonitor.server","l":"DatabaseServiceImpl"},{"p":"uni.climatemonitor.server","l":"ServerMain"}];updateSearchResults();

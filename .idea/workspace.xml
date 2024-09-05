@@ -11,11 +11,11 @@
   <component name="ChangeListManager">
     <list default="true" id="cabff44a-f517-451b-b1f0-e76d80cbb4af" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/artifacts/ClimateMonitoringServer_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/ClimateMonitoringServer_jar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/ClimateMonitoringCommon_0_18.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/ClimateMonitoringCommon_0_19.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/ClimateMonitoringCommon_0_19.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClimateMonitoringServer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ClimateMonitoringServer.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ClimateMonitoringCommon-0.18.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/uni/climatemonitor/server/DatabaseServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/uni/climatemonitor/server/DatabaseServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/ClimateMonitoringCommon-0.19.jar" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,10 +45,11 @@
     "Repository.Attach.Sources": "false",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "last_opened_file_path": "/home/luca/personal/uni/I ANNO/labA/ClimateMonitoringServer/lib/ClimateMonitoringCommon-0.19.jar",
+    "last_opened_file_path": "/home/luca/personal/uni/I ANNO/labA/ClimateMonitoringServer/lib/ClimateMonitoringCommon-0.20.jar",
     "project.structure.last.edited": "Artifacts",
     "project.structure.proportion": "0.1484375",
-    "project.structure.side.proportion": "0.2"
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.lookFeel"
   }
 }]]></component>
   <component name="RunManager" selected="Application.Server">
