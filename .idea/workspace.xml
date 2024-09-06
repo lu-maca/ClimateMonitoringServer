@@ -10,12 +10,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cabff44a-f517-451b-b1f0-e76d80cbb4af" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/ClimateMonitoringServer_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/ClimateMonitoringServer_jar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/ClimateMonitoringCommon_0_19.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClimateMonitoringServer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ClimateMonitoringServer.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ClimateMonitoringCommon-0.19.jar" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,6 +32,13 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
   <component name="ProjectId" id="2jYCsCY0sDsSAVL192nvDapHgDY" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -45,10 +52,10 @@
     "Repository.Attach.Sources": "false",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "last_opened_file_path": "/home/luca/personal/uni/I ANNO/labA/ClimateMonitoringServer/lib/ClimateMonitoringCommon-0.20.jar",
-    "project.structure.last.edited": "Artifacts",
+    "last_opened_file_path": "/home/luca/personal/uni/I ANNO/labA/ClimateMonitoringServer",
+    "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.1484375",
-    "project.structure.side.proportion": "0.2",
+    "project.structure.side.proportion": "0.4489093",
     "settings.editor.selected.configurable": "preferences.lookFeel"
   }
 }]]></component>

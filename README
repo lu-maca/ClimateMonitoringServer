@@ -1,0 +1,5 @@
+per compilare:
+
+- mvn clean compile
+- unzip target/classes/ClimateMonitoringCommon-0.20.jar -d target/classes
+- mvn package
