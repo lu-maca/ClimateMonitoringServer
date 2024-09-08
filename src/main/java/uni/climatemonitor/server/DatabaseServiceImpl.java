@@ -18,14 +18,15 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class DatabaseServiceImpl implements IDatabaseService {
-    static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/ClimateMonitoring";
+    static String DB_URL = "jdbc:mysql://%s:%d/ClimateMonitoring";
     static final String DB_USERNAME = "luca";
     static final String PASSWORD = "ClimateMonitoring";
     static final double MAX_DIST = 50_000.0;
 
     HashMap<IClient, Location> clientsInLocation;
 
-    public DatabaseServiceImpl() {
+    public DatabaseServiceImpl(String host, int port) {
+        DB_URL = String.format(DB_URL, host, port);
         clientsInLocation = new HashMap<>();
     }
 
@@ -512,7 +513,7 @@ public class DatabaseServiceImpl implements IDatabaseService {
 
     // tests
     public static void main(String args[]) throws RemoteException, SQLException {
-        DatabaseServiceImpl d = new DatabaseServiceImpl();
+        DatabaseServiceImpl d = new DatabaseServiceImpl("127.0.0.1", 3307);
 
       /*  // operators related tests
         System.out.println(d.operatorExists("lbianchi"));
@@ -547,9 +548,6 @@ public class DatabaseServiceImpl implements IDatabaseService {
         System.out.println(d.operatorExists("lbianchi"));
         System.out.println(d.getAllMonitoringCenters());
 
-        Location l = new Location("3164699", "Varese", "Varese", "Italy", 45.82058, 8.82511);
-        for (ClimateParameter c : d.getClimateParameterHistory(l)) {
-            System.out.println(c.getDate());
-        }
+
     }
 }
